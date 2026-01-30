@@ -51,7 +51,7 @@ export function ActionCauseChart({ data, loading, filterOptions, onFilterChange 
       }
     },
     legend: {
-      bottom: 0,
+      bottom: 10,
       icon: 'circle',
       itemWidth: 8,
       itemHeight: 8,
@@ -62,9 +62,10 @@ export function ActionCauseChart({ data, loading, filterOptions, onFilterChange 
     },
     grid: {
       ...commonChartOptions.grid,
-      bottom: 40,
+      bottom: 60,
       left: 200,
       top: 20,
+      right: 40,
     },
     xAxis: {
       type: 'value',

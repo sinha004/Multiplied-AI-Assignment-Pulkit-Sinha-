@@ -323,10 +323,11 @@ export function IncidentsPage() {
               )}
             </tbody>
           </table>
+        </div>
 
           {/* Pagination */}
           {data && (
-            <div className="pagination">
+            <div className="pagination" style={{ marginTop: '16px' }}>
               <div className="pagination-info">
                 Showing {((data.meta.page - 1) * data.meta.limit) + 1} to{' '}
                 {Math.min(data.meta.page * data.meta.limit, data.meta.total)} of {data.meta.total} results
@@ -363,9 +364,8 @@ export function IncidentsPage() {
               </div>
             </div>
           )}
-        </div>
 
-        {/* Edit/Create Modal */}
+        {/* Edit/Create Modal */}}
         {showModal && (
           <IncidentModal
             incident={selectedIncident}
