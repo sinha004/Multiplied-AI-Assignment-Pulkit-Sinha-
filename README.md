@@ -1,205 +1,157 @@
-# Near Miss Dashboard
+# 📊 Near Miss Incident Dashboard
 
-An interactive dashboard for analyzing construction near miss incidents. Built with **React.js** (Frontend) and **NestJS** (Backend) using **Supabase PostgreSQL** with **Prisma ORM**.
+> An enterprise-grade full-stack application for tracking, analyzing, and visualizing construction site "near miss" incidents.
+
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://multiplied-ai-assignment-pulkit-sin.vercel.app/)
+[![React](https://img.shields.io/badge/React-18-blue?style=flat-square&logo=react)](https://reactjs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-10-red?style=flat-square&logo=nestjs)](https://nestjs.com/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green?style=flat-square&logo=supabase)](https://supabase.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-blueviolet?style=flat-square&logo=prisma)](https://prisma.io/)
 
 ![Dashboard Preview](./docs/dashboard-preview.png)
 
-## 🚀 Features
+## � Project Overview
 
-- **Interactive Dashboard** with 6 professional charts (Apache ECharts)
-- **CRUD Operations** for incident management
-- **Advanced Filtering & Pagination** with debounced search
-- **Real-time Statistics** - severity, region, GBU, behavior type distributions
-- **Monthly Trend Analysis** with multi-year support
-- **Responsive Design** - works on desktop, tablet, and mobile
+This analytics dashboard provides safety officers and site managers with a powerful tool to monitor "Near Miss" incidents. It transitions from traditional spreadsheet tracking to a dynamic, visual, and interactive platform.
 
-## 📊 Charts Included
+The system is built to handle thousands of records with high performance, offering real-time filtering, aggregation, and visualization of safety data across multiple dimensions (Severity, Region, Action Cause, etc.).
 
-1. **Severity Distribution** - Donut chart showing incidents by severity level
-2. **Regional Analysis** - Bar chart with gradient colors
-3. **Monthly Trends** - Line chart with area fill and data zoom
-4. **Action Causes** - Horizontal bar chart for top causes
-5. **GBU Distribution** - Bar chart by business unit
-6. **Behavior Types** - Rose/pie chart with percentages
+## ✨ Key Features
 
-## 🛠️ Tech Stack
+### 🖥️ Frontend (Client-Side)
+*   **Dynamic Analytics Dashboard**:
+    *   **Severity Distribution**: Interactive Donut chart displaying the proportion of incidents by severity level.
+    *   **Regional Analysis**: Geographic breakdown of incidents using a Donut visualization.
+    *   **Monthly Trends**: Area chart with data zooming capabilities to analyze incident frequency over time.
+    *   **Action Cause Analysis**: Complex stacked bar chart correlating root causes with behavior types (Safe vs. At-Risk), filterable by region and year.
+    *   **Categorical Insights**: Detailed bar charts for Primary Categories, Job/Project types, and specific Locations.
+*   **Advanced Dynamic Filtering**:
+    *   A robust two-step filtering system allows users to first select *any* data attribute (e.g., "Company Type", "Job") and then dynamically fetch and select from available values for that specific attribute.
+*   **Incident Management (CRUD)**:
+    *   Full interface to **Create**, **Read**, **Update**, and **Delete** incident records.
+    *   Form validation and modal-based editing workflows.
+*   **Responsive & Polished UI**:
+    *   Glassmorphism design elements.
+    *   Fully responsive layout for Desktop, Tablet, and Mobile.
+    *   Professional color palettes and typography.
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18 + TypeScript + Vite |
-| Charts | Apache ECharts |
-| Backend | NestJS 11 + TypeScript |
-| Database | Supabase (PostgreSQL) |
-| ORM | Prisma 5 |
-| Styling | Vanilla CSS (Modern Dark Theme) |
+### ⚙️ Backend (Server-Side)
+*   **RESTful API Services**:
+    *   Built with **NestJS** for a modular, scalable architecture.
+    *   **Prisma ORM** for type-safe database interactions.
+*   **Advanced Aggregation**:
+    *   Dedicated endpoints for complex statistical queries (grouping, counting, filtering) optimized for chart rendering.
+*   **Robust Data Handling**:
+    *   Global Validation Pipes for DTOs.
+    *   CORS configuration for secure cross-origin requests.
+    *   Health check endpoints for monitoring.
 
-## 📋 Prerequisites
+## 🏗️ Technical Architecture
 
-- **Node.js** v20.15+ or v22+
-- **npm** v10+
-- **Supabase Account** (free tier works)
+### Tech Stack
 
-## ⚡ Quick Start
+| Layer | Technology | Description |
+|-------|------------|-------------|
+| **Frontend** | React 18 | Component-based UI library |
+| | TypeScript | Strong typing for reliability |
+| | Vite | Next-generation frontend tooling |
+| | Apache ECharts | Enterprise-level data visualization |
+| | Axios | Promise-based HTTP client |
+| | CSS Modules | Scoped component styling |
+| **Backend** | NestJS | Progressive Node.js framework |
+| | TypeScript | Server-side type safety |
+| | Prisma | Modern database ORM |
+| | PostgreSQL | Relational database (via Supabase) |
+| **DevOps** | Vercel | Frontend hosting |
+| | Render/Cloud | Backend hosting |
+
+## 🚀 Getting Started
+
+Follow these instructions to set up the project locally.
+
+### Prerequisites
+*   Node.js (v18+)
+*   npm or yarn
+*   Git
 
 ### 1. Clone the Repository
-
 ```bash
-git clone <repository-url>
-cd near-miss-dashboard
+git clone https://github.com/sinha004/Multiplied-AI-Assignment-Pulkit-Sinha-.git
+cd Multiplied-AI-Assignment-Pulkit-Sinha-
 ```
 
-### 2. Setup Backend
-
+### 2. Backend Setup
 ```bash
 cd backend
 
 # Install dependencies
 npm install
 
-# Create environment file
-cp .env.example .env
+# Environment Configuration
+# Create a .env file and add your database credentials
+# DATABASE_URL="postgresql://user:password@host:port/db"
 
-# Edit .env with your Supabase credentials
-# DATABASE_URL="postgresql://..."
-# DIRECT_URL="postgresql://..."
+# Database Setup
+npx prisma generate   # Generate Prisma Client
+npx prisma db push    # Push schema to database
+npx prisma db seed    # Seed database with initial data
 
-# Generate Prisma client
-npx prisma generate
-
-# Run database migration
-npx prisma migrate dev --name init
-
-# Seed database with incidents data
-npx prisma db seed
-
-# Start development server
+# Start Server
 npm run start:dev
 ```
+*The backend will start at `http://localhost:3000`*
 
-### 3. Setup Frontend
-
+### 3. Frontend Setup
 ```bash
 cd frontend
 
 # Install dependencies
 npm install
 
-# Start development server
+# Environment Configuration
+# Create a .env file (optional if backend is local)
+# VITE_API_URL="http://localhost:3000/api"
+
+# Start Development Server
 npm run dev
 ```
+*The frontend will start at `http://localhost:5173`*
 
-### 4. Access the Application
+## 🔌 API Documentation
 
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:3000/api
-- **Prisma Studio**: `npx prisma studio` (database viewer)
-
-## 🔧 Environment Variables
-
-### Backend (.env)
-
-```env
-DATABASE_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true"
-DIRECT_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres"
-PORT=3000
-```
-
-### Frontend (optional .env)
-
-```env
-VITE_API_URL=http://localhost:3000/api
-```
-
-## 📁 Project Structure
-
-```
-├── backend/
-│   ├── src/
-│   │   ├── incidents/          # Incidents module (CRUD + stats)
-│   │   ├── prisma/             # Prisma service
-│   │   └── main.ts             # Entry point
-│   ├── prisma/
-│   │   ├── schema.prisma       # Database schema
-│   │   └── seed.ts             # Data seeding script
-│   └── data/
-│       └── db.dashboard_incidents.json
-│
-├── frontend/
-│   ├── src/
-│   │   ├── api/                # API service layer
-│   │   ├── components/
-│   │   │   ├── charts/         # 6 ECharts components
-│   │   │   ├── cards/          # KPI cards
-│   │   │   └── layout/         # Layout components
-│   │   ├── pages/              # Dashboard & Incidents pages
-│   │   ├── types/              # TypeScript interfaces
-│   │   └── utils/              # Chart config & formatters
-│   └── index.html
-```
-
-## 🔌 API Endpoints
+### Core Endpoints
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/incidents` | Paginated list with filters |
-| GET | `/api/incidents/:id` | Get single incident |
-| POST | `/api/incidents` | Create incident |
-| PUT | `/api/incidents/:id` | Update incident |
-| DELETE | `/api/incidents/:id` | Delete incident |
-| GET | `/api/incidents/stats/summary` | KPI summary |
-| GET | `/api/incidents/stats/by-severity` | Group by severity |
-| GET | `/api/incidents/stats/by-region` | Group by region |
-| GET | `/api/incidents/stats/by-month` | Monthly trends |
-| GET | `/api/incidents/stats/by-action-cause` | Top causes |
-| GET | `/api/incidents/stats/by-gbu` | By GBU |
-| GET | `/api/incidents/stats/by-behavior-type` | Behavior distribution |
+|:-------|:---------|:------------|
+| `GET` | `/api/incidents` | Retrieve paginated list of incidents with optional filters. |
+| `POST` | `/api/incidents` | Create a new incident record. |
+| `GET` | `/api/incidents/:id` | Retrieve a specific incident by ID. |
+| `PUT` | `/api/incidents/:id` | Update an existing incident. |
+| `DELETE` | `/api/incidents/:id` | Remove an incident record. |
+| `GET` | `/health` | Check API system health status. |
 
-## 🔍 Query Parameters (Filtering)
+### Analytics Endpoints
 
-| Parameter | Type | Example | Description |
-|-----------|------|---------|-------------|
-| page | number | `1` | Page number |
-| limit | number | `20` | Items per page (max: 100) |
-| sortBy | string | `incidentDate` | Sort field |
-| sortOrder | string | `desc` | asc or desc |
-| search | string | `dropped` | Search text |
-| severityLevel | string | `1,2,3` | Comma-separated levels |
-| region | string | `Asia` | Region filter |
-| gbu | string | `Energy` | GBU filter |
-| year | number | `2024` | Year filter |
+| Endpoint | Purpose |
+|:---------|:--------|
+| `/stats/summary` | High-level KPIs (Total incidents, LCV counts). |
+| `/stats/by-severity` | Data for severity distribution donut chart. |
+| `/stats/by-region` | Data with formatted labels for regional analysis. |
+| `/stats/by-month` | Time-series data for trend analysis. |
+| `/stats/by-action-cause-details` | Complex dataset for Action Cause interactions. |
+| `/attributes/:field` | Dynamic distinct values for any schema field. |
 
-## 🎨 Design Features
+## �️ Deployment
 
-- Modern dark theme with gradient accents
-- Glassmorphism effects
-- Smooth animations and micro-interactions
-- Responsive grid layouts
-- Professional color palette
-- Custom scrollbars
+The application is deployed live:
+*   **Frontend**: Hosted on [Vercel](https://vercel.com) for edge-network performance.
+*   **Backend**: Hosted on [Render](https://render.com) (or similar) providing the API runtime.
+*   **Database**: Managed PostgreSQL instance on [Supabase](https://supabase.com).
 
-## 📝 Assumptions & Limitations
-
-1. Dataset is loaded into memory at server startup (~7,800 records)
-2. No authentication required for this dashboard
-3. Empty string values treated as `null` in database
-4. Timestamps in `incident_date` are in milliseconds
-
-## 🧪 Testing
-
-```bash
-# Backend
-cd backend
-npm run test
-
-# Frontend
-cd frontend
-npm run build  # Type check during build
-```
-
-## 📄 License
-
-MIT License
+To deploy your own instance, verify the environment variables:
+*   **Frontend**: Set `VITE_API_URL` to your production backend URL.
+*   **Backend**: Set `FRONTEND_URL` to your production frontend URL (for CORS) and `DATABASE_URL` for the connection.
 
 ---
 
-Built with ❤️ for Near Miss Data Analysis
+**Developed by Pulkit Sinha for Multiplied AI Assignment**
