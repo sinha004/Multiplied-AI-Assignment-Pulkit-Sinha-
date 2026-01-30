@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { Select, Space } from 'antd';
+import { BarChartIcon } from '../common/Icons';
 import { commonChartOptions } from '../../utils/chartConfig';
 import { ActionCauseDetails, ActionCauseFilters, FilterOptions } from '../../types/incident.types';
 
@@ -117,8 +118,8 @@ export function ActionCauseChart({ data, loading, filterOptions, onFilterChange 
 
   return (
     <div className="chart-container" style={{ height: `${chartHeight + 100}px` }}>
-      <h3 className="chart-title">
-        <span>⚡</span> Action Cause by Behavior Type
+      <h3 className="chart-title" style={{ gap: '12px' }}>
+        <BarChartIcon /> Action Cause by Behavior Type
       </h3>
       {/* Filter Controls */}
       <div style={{ 

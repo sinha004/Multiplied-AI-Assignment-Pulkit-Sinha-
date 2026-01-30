@@ -241,7 +241,7 @@ export function IncidentsPage() {
           <table className="table" style={{ minWidth: '1800px' }}>
             <thead>
               <tr>
-                <th onClick={() => handleSort('incidentNumber')} style={{ cursor: 'pointer', minWidth: '100px', position: 'sticky', left: 0, background: 'var(--color-bg-hover)', zIndex: 10 }}>
+                <th onClick={() => handleSort('incidentNumber')} className="sticky-col sticky-left" style={{ cursor: 'pointer', minWidth: '100px' }}>
                   Incident # {filters.sortBy === 'incidentNumber' && (filters.sortOrder === 'asc' ? '↑' : '↓')}
                 </th>
                 <th onClick={() => handleSort('incidentDate')} style={{ cursor: 'pointer', minWidth: '120px' }}>
@@ -261,7 +261,7 @@ export function IncidentsPage() {
                 <th style={{ minWidth: '120px' }}>Craft Code</th>
                 <th style={{ minWidth: '150px' }}>Behavior Type</th>
                 <th style={{ minWidth: '120px' }}>GBU</th>
-                <th style={{ minWidth: '100px', position: 'sticky', right: 0, background: 'var(--color-bg-hover)', zIndex: 10 }}>Actions</th>
+                <th className="sticky-col sticky-right" style={{ minWidth: '100px' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -282,7 +282,7 @@ export function IncidentsPage() {
               ) : (
                 data?.data.map((incident) => (
                   <tr key={incident.id}>
-                    <td style={{ position: 'sticky', left: 0, background: 'inherit', zIndex: 1, borderRight: '1px solid var(--color-border)' }}>{incident.incidentNumber}</td>
+                    <td className="sticky-col sticky-left">{incident.incidentNumber}</td>
                     <td>{formatDate(incident.incidentDate)}</td>
                     <td>
                       <span className={getSeverityBadge(incident.severityLevel)}>
@@ -300,7 +300,7 @@ export function IncidentsPage() {
                     <td>{incident.craftCode || '-'}</td>
                     <td>{incident.behaviorType || '-'}</td>
                     <td>{incident.gbu || '-'}</td>
-                    <td style={{ position: 'sticky', right: 0, background: 'inherit', zIndex: 1, borderLeft: '1px solid var(--color-border)' }}>
+                    <td className="sticky-col sticky-right">
                       <div className="flex gap-sm">
                         <button
                           className="btn btn-secondary"

@@ -758,3 +758,29 @@ a:hover {
 .mt-md { margin-top: var(--spacing-md); }
 .mb-md { margin-bottom: var(--spacing-md); }
 .mb-lg { margin-bottom: var(--spacing-lg); }
+
+/* Sticky Columns */
+.table .sticky-col {
+  position: sticky;
+  z-index: 10;
+  background-color: var(--color-bg-card); /* Solid background to hide scrolling content */
+}
+
+.table th.sticky-col {
+  z-index: 20; /* Header on top of body */
+  background-color: var(--color-bg-hover); /* Default header bg */
+}
+
+.table tr:hover .sticky-col {
+  background-color: var(--color-bg-hover); /* Match row hover */
+}
+
+.sticky-left {
+  left: 0;
+  border-right: 1px solid var(--color-border);
+}
+
+.sticky-right {
+  right: 0;
+  border-left: 1px solid var(--color-border);
+}

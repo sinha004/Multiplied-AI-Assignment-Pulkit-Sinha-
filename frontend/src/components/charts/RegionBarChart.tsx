@@ -12,7 +12,16 @@ export function RegionBarChart({ data, loading }: RegionBarChartProps) {
   const sortedData = [...data].sort((a, b) => b.value - a.value);
   const total = sortedData.reduce((sum, item) => sum + item.value, 0);
 
-  const chartData = sortedData.map((item, index) => ({
+  // Take top 5 regions and group rest into "Other"
+  const topRegions = sortedData.slice(0, 5);
+  const otherRegions = sortedData.slice(5);
+  const otherTotal = otherRegions.reduce((sum, item) => sum + item.value, 0);
+
+  const displayData = otherTotal > 0 
+    ? [...topRegions, { label: 'Other', value: otherTotal }]
+    : topRegions;
+
+  const chartData = displayData.map((item, index) => ({
     name: item.label,
     value: item.value,
     itemStyle: {
@@ -32,19 +41,21 @@ export function RegionBarChart({ data, loading }: RegionBarChartProps) {
     },
     legend: {
       orient: 'vertical',
-      right: '5%',
+      right: '2%',
       top: 'center',
       textStyle: {
         color: '#6B7280',
         fontSize: 12,
       },
-      itemGap: 12,
+      itemGap: 16,
+      itemWidth: 12,
+      itemHeight: 12,
     },
     graphic: [
       {
         type: 'text',
-        left: '28%',
-        top: '45%',
+        left: '22%',
+        top: '42%',
         style: {
           text: formatNumber(total),
           textAlign: 'center',
@@ -55,7 +66,7 @@ export function RegionBarChart({ data, loading }: RegionBarChartProps) {
       },
       {
         type: 'text',
-        left: '28%',
+        left: '22%',
         top: '55%',
         style: {
           text: 'Total',
@@ -69,13 +80,13 @@ export function RegionBarChart({ data, loading }: RegionBarChartProps) {
       {
         name: 'Region',
         type: 'pie',
-        radius: ['55%', '80%'],
-        center: ['32%', '50%'],
+        radius: ['50%', '75%'],
+        center: ['28%', '50%'],
         avoidLabelOverlap: false,
         itemStyle: {
-          borderRadius: 8,
+          borderRadius: 6,
           borderColor: '#FFFFFF',
-          borderWidth: 3,
+          borderWidth: 2,
         },
         label: {
           show: false,

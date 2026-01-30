@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
+import { FolderIcon } from '../common/Icons';
 import { commonChartOptions } from '../../utils/chartConfig';
 import { StatItem } from '../../types/incident.types';
 
@@ -130,8 +131,8 @@ export function CombinedCategoryChart({
 
   return (
     <div className="chart-container" style={{ height: `${chartHeight + 100}px` }}>
-      <h3 className="chart-title">
-        <span>📂</span> Category Analysis
+      <h3 className="chart-title" style={{ gap: '12px' }}>
+        <FolderIcon /> Category Analysis
       </h3>
       {/* Tab Navigation */}
       <div
