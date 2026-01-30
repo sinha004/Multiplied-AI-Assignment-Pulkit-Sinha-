@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const GlobeIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500">
     <circle cx="12" cy="12" r="10"></circle>
