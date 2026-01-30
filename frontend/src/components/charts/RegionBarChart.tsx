@@ -1,4 +1,5 @@
 import ReactECharts from 'echarts-for-react';
+import { GlobeIcon } from '../common/Icons';
 import type { StatItem } from '../../types/incident.types';
 import { chartColors, commonChartOptions, formatNumber } from '../../utils/chartConfig';
 
@@ -103,10 +104,11 @@ export function RegionBarChart({ data, loading }: RegionBarChartProps) {
     );
   }
 
+
   return (
     <div className="chart-container">
-      <h3 className="chart-title">
-        <span>🌍</span> Incidents by Region
+      <h3 className="chart-title" style={{ gap: '12px' }}>
+        <GlobeIcon /> Incidents by Region
       </h3>
       <div className="chart-wrapper">
         <ReactECharts

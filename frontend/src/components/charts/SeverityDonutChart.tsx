@@ -1,4 +1,5 @@
 import ReactECharts from 'echarts-for-react';
+import { ChartPieIcon } from '../common/Icons';
 import type { StatItem } from '../../types/incident.types';
 import { severityColors, commonChartOptions, formatNumber } from '../../utils/chartConfig';
 
@@ -98,10 +99,11 @@ export function SeverityDonutChart({ data, loading }: SeverityDonutChartProps) {
     );
   }
 
+
   return (
     <div className="chart-container">
-      <h3 className="chart-title">
-        <span>📊</span> Severity Distribution
+      <h3 className="chart-title" style={{ gap: '12px' }}>
+        <ChartPieIcon /> Severity Distribution
       </h3>
       <div className="chart-wrapper">
         <ReactECharts

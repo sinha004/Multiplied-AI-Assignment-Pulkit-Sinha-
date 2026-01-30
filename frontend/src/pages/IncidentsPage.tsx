@@ -237,29 +237,37 @@ export function IncidentsPage() {
         </div>
 
         {/* Table */}
-        <div className="table-container">
-          <table className="table">
+        <div className="table-container" style={{ overflowX: 'auto', maxWidth: '100%' }}>
+          <table className="table" style={{ minWidth: '1800px' }}>
             <thead>
               <tr>
-                <th onClick={() => handleSort('incidentNumber')} style={{ cursor: 'pointer' }}>
+                <th onClick={() => handleSort('incidentNumber')} style={{ cursor: 'pointer', minWidth: '100px', position: 'sticky', left: 0, background: 'var(--color-bg-hover)', zIndex: 10 }}>
                   Incident # {filters.sortBy === 'incidentNumber' && (filters.sortOrder === 'asc' ? '↑' : '↓')}
                 </th>
-                <th onClick={() => handleSort('incidentDate')} style={{ cursor: 'pointer' }}>
+                <th onClick={() => handleSort('incidentDate')} style={{ cursor: 'pointer', minWidth: '120px' }}>
                   Date {filters.sortBy === 'incidentDate' && (filters.sortOrder === 'asc' ? '↑' : '↓')}
                 </th>
-                <th onClick={() => handleSort('severityLevel')} style={{ cursor: 'pointer' }}>
+                <th onClick={() => handleSort('severityLevel')} style={{ cursor: 'pointer', minWidth: '120px' }}>
                   Severity {filters.sortBy === 'severityLevel' && (filters.sortOrder === 'asc' ? '↑' : '↓')}
                 </th>
-                <th>Action Cause</th>
-                <th>Region</th>
-                <th>Location</th>
-                <th>Actions</th>
+                <th style={{ minWidth: '200px' }}>Action Cause</th>
+                <th style={{ minWidth: '150px' }}>Region</th>
+                <th style={{ minWidth: '150px' }}>Location</th>
+                <th style={{ minWidth: '150px' }}>Primary Category</th>
+                <th style={{ minWidth: '180px' }}>Near Miss Type</th>
+                <th style={{ minWidth: '250px' }}>Unsafe Condition</th>
+                <th style={{ minWidth: '150px' }}>Company Type</th>
+                <th style={{ minWidth: '150px' }}>Job</th>
+                <th style={{ minWidth: '120px' }}>Craft Code</th>
+                <th style={{ minWidth: '150px' }}>Behavior Type</th>
+                <th style={{ minWidth: '120px' }}>GBU</th>
+                <th style={{ minWidth: '100px', position: 'sticky', right: 0, background: 'var(--color-bg-hover)', zIndex: 10 }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={7}>
+                  <td colSpan={15}>
                     <div className="loading-container">
                       <div className="spinner"></div>
                     </div>
@@ -267,24 +275,32 @@ export function IncidentsPage() {
                 </tr>
               ) : data?.data.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }}>
+                  <td colSpan={15} style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }}>
                     No incidents found
                   </td>
                 </tr>
               ) : (
                 data?.data.map((incident) => (
                   <tr key={incident.id}>
-                    <td>{incident.incidentNumber}</td>
+                    <td style={{ position: 'sticky', left: 0, background: 'inherit', zIndex: 1, borderRight: '1px solid var(--color-border)' }}>{incident.incidentNumber}</td>
                     <td>{formatDate(incident.incidentDate)}</td>
                     <td>
                       <span className={getSeverityBadge(incident.severityLevel)}>
                         Level {incident.severityLevel}
                       </span>
                     </td>
-                    <td>{incident.actionCause || '-'}</td>
+                    <td><div style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={incident.actionCause || ''}>{incident.actionCause || '-'}</div></td>
                     <td>{incident.region || '-'}</td>
                     <td>{incident.location || '-'}</td>
-                    <td>
+                    <td>{incident.primaryCategory || '-'}</td>
+                    <td>{incident.nearMissSubCategory || '-'}</td>
+                    <td><div style={{ maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={incident.unsafeConditionOrBehavior || ''}>{incident.unsafeConditionOrBehavior || '-'}</div></td>
+                    <td>{incident.companyType || '-'}</td>
+                    <td>{incident.job || '-'}</td>
+                    <td>{incident.craftCode || '-'}</td>
+                    <td>{incident.behaviorType || '-'}</td>
+                    <td>{incident.gbu || '-'}</td>
+                    <td style={{ position: 'sticky', right: 0, background: 'inherit', zIndex: 1, borderLeft: '1px solid var(--color-border)' }}>
                       <div className="flex gap-sm">
                         <button
                           className="btn btn-secondary"

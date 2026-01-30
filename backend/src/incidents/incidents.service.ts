@@ -221,9 +221,8 @@ export class IncidentsService {
     }));
 
     const byBehaviorType: StatItemDto[] = byBehaviorRaw
-      .filter((item) => item.behaviorType)
       .map((item) => ({
-        label: item.behaviorType || 'Unknown',
+        label: item.behaviorType || 'Other',
         value: item._count.behaviorType,
         percentage: Math.round((item._count.behaviorType / totalIncidents) * 100),
       }));
@@ -263,9 +262,8 @@ export class IncidentsService {
     });
 
     return data
-      .filter((item) => item.region)
       .map((item) => ({
-        label: item.region || 'Unknown',
+        label: item.region || 'Other',
         value: item._count.region,
         percentage: Math.round((item._count.region / total) * 100),
       }));
@@ -297,9 +295,8 @@ export class IncidentsService {
     });
 
     return data
-      .filter((item) => item.actionCause)
       .map((item) => ({
-        label: item.actionCause || 'Unknown',
+        label: item.actionCause || 'Other',
         value: item._count.actionCause,
         percentage: Math.round((item._count.actionCause / total) * 100),
       }));
@@ -315,9 +312,8 @@ export class IncidentsService {
     });
 
     return data
-      .filter((item) => item.gbu)
       .map((item) => ({
-        label: item.gbu || 'Unknown',
+        label: item.gbu || 'Other',
         value: item._count.gbu,
         percentage: Math.round((item._count.gbu / total) * 100),
       }));
@@ -333,9 +329,8 @@ export class IncidentsService {
     });
 
     return data
-      .filter((item) => item.behaviorType)
       .map((item) => ({
-        label: item.behaviorType || 'Unknown',
+        label: item.behaviorType || 'Other',
         value: item._count.behaviorType,
         percentage: Math.round((item._count.behaviorType / total) * 100),
       }));
@@ -415,9 +410,8 @@ export class IncidentsService {
     });
 
     return data
-      .filter((item) => item.primaryCategory)
       .map((item) => ({
-        label: item.primaryCategory || 'Unknown',
+        label: item.primaryCategory || 'Other',
         value: item._count.primaryCategory,
         percentage: Math.round((item._count.primaryCategory / total) * 100),
       }));
@@ -434,9 +428,8 @@ export class IncidentsService {
     });
 
     return data
-      .filter((item) => item.location)
       .map((item) => ({
-        label: item.location || 'Unknown',
+        label: item.location || 'Other',
         value: item._count.location,
         percentage: Math.round((item._count.location / total) * 100),
       }));
@@ -453,9 +446,8 @@ export class IncidentsService {
     });
 
     return data
-      .filter((item) => item.job)
       .map((item) => ({
-        label: item.job || 'Unknown',
+        label: item.job || 'Other',
         value: item._count.job,
         percentage: Math.round((item._count.job / total) * 100),
       }));
