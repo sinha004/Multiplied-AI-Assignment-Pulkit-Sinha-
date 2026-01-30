@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { commonChartOptions } from '../../utils/chartConfig';
-import { LayersIcon } from '../common/Icons';
 import { StatItem } from '../../types/incident.types';
 
 // Colors from colour.txt palette
@@ -132,7 +131,7 @@ export function CombinedCategoryChart({
   return (
     <div className="chart-container" style={{ height: `${chartHeight + 100}px` }}>
       <h3 className="chart-title">
-        <LayersIcon /> Category Analysis
+        <span>📂</span> Category Analysis
       </h3>
       {/* Tab Navigation */}
       <div

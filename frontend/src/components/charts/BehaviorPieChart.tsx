@@ -1,7 +1,6 @@
 import ReactECharts from 'echarts-for-react';
 import type { StatItem } from '../../types/incident.types';
 import { pieColors, commonChartOptions, formatNumber } from '../../utils/chartConfig';
-import { UsersIcon } from '../common/Icons';
 
 interface BehaviorPieChartProps {
   data: StatItem[];
@@ -76,7 +75,7 @@ export function BehaviorPieChart({ data, loading }: BehaviorPieChartProps) {
   return (
     <div className="chart-container">
       <h3 className="chart-title">
-        <UsersIcon /> Behavior Types
+        <span>👤</span> Behavior Types
       </h3>
       <div className="chart-wrapper">
         <ReactECharts
