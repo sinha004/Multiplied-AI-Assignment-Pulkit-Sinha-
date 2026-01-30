@@ -10,9 +10,26 @@ export default async function handler(req, res) {
     app = await NestFactory.create(AppModule);
 
     // Enable CORS for frontend
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+    ];
+
     app.enableCors({
-      origin: process.env.FRONTEND_URL ? [process.env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000'] : ['http://localhost:5173', 'http://localhost:3000'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+      origin: (origin, callback) => {
+        // Allow no origin (e.g. mobile apps, curl)
+        if (!origin) return callback(null, true);
+        
+        // Allow allowedOrigins
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        
+        // Allow all vercel.app deployments (previews, etc.)
+        if (origin.endsWith('.vercel.app')) return callback(null, true);
+        
+        callback(new Error('Not allowed by CORS'));
+      },
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       credentials: true,
     });
 

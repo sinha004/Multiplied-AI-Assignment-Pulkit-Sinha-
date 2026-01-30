@@ -7,8 +7,13 @@ async function bootstrap() {
 
   // Enable CORS for frontend
   app.enableCors({
-    origin: process.env.FRONTEND_URL ? [process.env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000'] : ['http://localhost:5173', 'http://localhost:3000'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'https://multiplied-ai-assignment-pulkit-sin.vercel.app',
+      /\.vercel\.app$/,  // Allow all Vercel preview deployments
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
   });
 
