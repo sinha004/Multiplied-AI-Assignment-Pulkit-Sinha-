@@ -118,7 +118,7 @@ export function ActionCauseChart({ data, loading, filterOptions, onFilterChange 
   };
 
   return (
-    <div className="chart-container" style={{ height: `${chartHeight + 150}px` }}>
+    <div className="chart-container" style={{ height: `${chartHeight + 170}px` }}>
       <h3 className="chart-title" style={{ gap: '12px' }}>
         <BarChartIcon /> Action Cause by Behavior Type
       </h3>
