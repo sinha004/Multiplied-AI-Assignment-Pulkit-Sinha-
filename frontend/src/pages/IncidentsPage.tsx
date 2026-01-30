@@ -365,7 +365,7 @@ export function IncidentsPage() {
             </div>
           )}
 
-        {/* Edit/Create Modal */}}
+        {/* Edit/Create Modal */}
         {showModal && (
           <IncidentModal
             incident={selectedIncident}
