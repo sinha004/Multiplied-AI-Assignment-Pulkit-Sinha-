@@ -1,0 +1,77 @@
+Interactive Dashboard for Near Miss Data Analysis
+
+Objective
+
+The goal of this assignment is to evaluate your ability to work with real-world datasets, build a stable and interactive dashboard, demonstrate data visualization skills, and optionally apply AI/LLM capabilities for data-driven question answering.
+
+
+
+Dataset Provided
+- Format: JSON
+- Size: Approximately 7,800 records
+- Content: Near miss / incident-related structured data
+The dataset will be shared with you at the start of the test.
+
+
+
+Problem Statement
+
+What is a Near Miss?
+In a construction company, a near miss refers to an unplanned event that could have resulted in an accident, injury, or damage, but did not, either by chance or timely intervention.
+
+For example: 
+
+A worker slips on a wet surface but regains balance without falling,
+
+A tool falls from a height but misses people below,
+
+A vehicle stops just in time to avoid a collision
+
+
+Using the provided Near Miss JSON dataset, build a dashboard application that:
+1. Loads and processes the dataset (JSON to CSV conversion is allowed).
+2. Displays meaningful visualizations such as bar charts, line charts, pie/donut charts, trend analysis, or category/severity distributions.
+3. Ensures performance and stability – the app should not crash and should handle missing or empty data gracefully.
+4. Provides a simple, clean, and readable user interface.
+
+You are free to choose any frontend framework, backend , and charting library.
+
+
+
+Tools & Technologies
+You may use any programming language, framework, or AI tool. Use of AI tools (Cursor, AntiGravity, Chatgpt...) during development is allowed. Code quality and clarity matters.
+
+
+
+Submission Instructions
+Submit GitHub repository link (Public) for your project. The repository must include the complete source code, a README with setup instructions, and clearly stated assumptions or limitations. Paste the GitHub repository URL under the Solution Link section. 
+
+
+Evaluation Criteria
+- Data handling and correctness
+- Quality and relevance of visualizations
+- Application stability and performance
+- Code quality and structure
+- User experience
+
+
+Expected Outcome
+A working dashboard that effectively visualizes Near Miss data with atleast 5 charts or graphs
+
+
+
+Important Submission Rules (Mandatory)
+The following rules are strictly enforced and are extremely important:
+
+
+You can submit your response only once through the Google Form. Multiple submissions are not allowed.
+
+Only responses submitted using your official college email ID will be considered.
+
+Late submissions beyond the specified deadline will not be accepted for evaluation.  
+
+If two submissions are found to be identical, both entries will be disqualified.
+
+The app, webpage, or service must be runnable, so that we can verify and view the results.
+
+Failure to follow any of the above rules may result in disqualification. 

@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Incident {
+  id                        String    @id @default(uuid())
+  incidentNumber            String    @unique @map("incident_number")
+  incidentDate              DateTime  @map("incident_date")
+  severityLevel             Int       @default(0) @map("severity_level")
+  actionCause               String?   @map("action_cause")
+  behaviorType              String?   @map("behavior_type")
+  gbu                       String?
+  region                    String?
+  primaryCategory           String?   @map("primary_category")
+  nearMissSubCategory       String?   @map("near_miss_sub_category")
+  unsafeConditionOrBehavior String?   @map("unsafe_condition_or_behavior")
+  companyType               String?   @map("company_type")
+  location                  String?
+  job                       String?
+  craftCode                 String?   @map("craft_code")
+  year                      Int
+  month                     Int
+  week                      Int
+  dayOfYear                 Int       @map("day_of_year")
+  isLcv                     Boolean   @default(false) @map("is_lcv")
+  createdAt                 DateTime  @default(now()) @map("created_at")
+  updatedAt                 DateTime  @updatedAt @map("updated_at")
+
+  @@index([severityLevel])
+  @@index([region])
+  @@index([gbu])
+  @@index([year, month])
+  @@index([incidentDate])
+  @@map("incidents")
+}
