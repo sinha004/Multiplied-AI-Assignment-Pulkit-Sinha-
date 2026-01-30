@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { Select, Space } from 'antd';
 import { commonChartOptions } from '../../utils/chartConfig';
+import { ZapIcon } from '../common/Icons';
 import { ActionCauseDetails, ActionCauseFilters, FilterOptions } from '../../types/incident.types';
 
 interface ActionCauseChartProps {
@@ -62,7 +63,7 @@ export function ActionCauseChart({ data, loading, filterOptions, onFilterChange 
     grid: {
       ...commonChartOptions.grid,
       bottom: 40,
-      left: 200,
+      left: 20,
       top: 20,
     },
     xAxis: {
@@ -80,28 +81,37 @@ export function ActionCauseChart({ data, loading, filterOptions, onFilterChange 
       type: 'category',
       data: data.map(item => item.actionCause),
       axisLabel: {
-        interval: 0,
-        color: '#6B7280',
-        fontSize: 11,
-        width: 180,
-        overflow: 'truncate',
-        ellipsis: '...',
+        show: false,
       },
       axisLine: {
-        lineStyle: {
-          color: '#E5E7EB',
-        },
+        show: false,
+      },
+      axisTick: {
+        show: false,
       },
     },
-    series: behaviorTypes.map(type => ({
+    series: behaviorTypes.map((type, typeIndex) => ({
       name: type,
       type: 'bar',
       stack: 'total',
-      barCategoryGap: '40%',
+      barCategoryGap: '35%',
       color: getColor(type),
       emphasis: {
         focus: 'series'
       },
+      label: typeIndex === 0 ? {
+        show: true,
+        position: 'insideLeft',
+        formatter: (params: { dataIndex: number }) => {
+          const label = data[params.dataIndex]?.actionCause || '';
+          return label.length > 35 ? label.substring(0, 35) + '...' : label;
+        },
+        color: '#FFFFFF',
+        fontSize: 11,
+        fontWeight: 500,
+        textShadowColor: 'rgba(0,0,0,0.3)',
+        textShadowBlur: 2,
+      } : { show: false },
       data: data.map(item => item.breakdown[type] || 0)
     })),
   };
@@ -118,7 +128,7 @@ export function ActionCauseChart({ data, loading, filterOptions, onFilterChange 
   return (
     <div className="chart-container" style={{ height: `${chartHeight + 100}px` }}>
       <h3 className="chart-title">
-        <span>⚡</span> Action Cause by Behavior Type
+        <ZapIcon /> Action Cause by Behavior Type
       </h3>
       {/* Filter Controls */}
       <div style={{ 

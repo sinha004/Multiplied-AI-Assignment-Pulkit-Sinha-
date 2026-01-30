@@ -237,7 +237,7 @@ export function IncidentsPage() {
         </div>
 
         {/* Table */}
-        <div className="table-container" style={{ overflowX: 'auto', maxWidth: '100%' }}>
+        <div className="table-container" style={{ width: '100%', overflowX: 'auto' }}>
           <table className="table" style={{ minWidth: '1800px' }}>
             <thead>
               <tr>

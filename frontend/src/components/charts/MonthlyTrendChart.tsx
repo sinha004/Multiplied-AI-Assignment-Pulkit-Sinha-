@@ -1,6 +1,7 @@
 import ReactECharts from 'echarts-for-react';
 import type { MonthlyTrend } from '../../types/incident.types';
 import { monthNames, commonChartOptions, chartColors } from '../../utils/chartConfig';
+import { TrendingUpIcon } from '../common/Icons';
 
 interface MonthlyTrendChartProps {
   data: MonthlyTrend[];
@@ -116,7 +117,7 @@ export function MonthlyTrendChart({ data, loading }: MonthlyTrendChartProps) {
   return (
     <div className="chart-container">
       <h3 className="chart-title">
-        <span>📈</span> Monthly Trends
+        <TrendingUpIcon /> Monthly Trends
       </h3>
       <div className="chart-wrapper">
         <ReactECharts

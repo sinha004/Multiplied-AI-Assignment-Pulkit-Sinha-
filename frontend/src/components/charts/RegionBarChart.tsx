@@ -9,16 +9,29 @@ interface RegionBarChartProps {
 }
 
 export function RegionBarChart({ data, loading }: RegionBarChartProps) {
-  const sortedData = [...data].sort((a, b) => b.value - a.value);
-  const total = sortedData.reduce((sum, item) => sum + item.value, 0);
+  const sortedData = [...data].sort((a, b) => b.value - a.value).slice(0, 6);
+  const total = data.reduce((sum, item) => sum + item.value, 0);
 
-  const chartData = sortedData.map((item, index) => ({
-    name: item.label,
-    value: item.value,
-    itemStyle: {
-      color: chartColors.palette[index % chartColors.palette.length],
-    },
-  }));
+  // Group remaining items as "Other"
+  const topItems = [...data].sort((a, b) => b.value - a.value).slice(0, 5);
+  const otherTotal = data.reduce((sum, item) => sum + item.value, 0) - topItems.reduce((sum, item) => sum + item.value, 0);
+  
+  const chartData = [
+    ...topItems.map((item, index) => ({
+      name: item.label,
+      value: item.value,
+      itemStyle: {
+        color: chartColors.palette[index % chartColors.palette.length],
+      },
+    })),
+    ...(otherTotal > 0 ? [{
+      name: 'Other',
+      value: otherTotal,
+      itemStyle: {
+        color: chartColors.palette[5],
+      },
+    }] : []),
+  ];
 
   const option = {
     ...commonChartOptions,
@@ -32,36 +45,42 @@ export function RegionBarChart({ data, loading }: RegionBarChartProps) {
     },
     legend: {
       orient: 'vertical',
-      right: '5%',
-      top: 'center',
+      right: 10,
+      top: 'middle',
       textStyle: {
         color: '#6B7280',
-        fontSize: 12,
+        fontSize: 11,
       },
-      itemGap: 12,
+      itemGap: 8,
+      itemWidth: 10,
+      itemHeight: 10,
+      formatter: (name: string) => {
+        const item = chartData.find(d => d.name === name);
+        return name.length > 18 ? name.substring(0, 18) + '...' : name;
+      },
     },
     graphic: [
       {
         type: 'text',
-        left: '28%',
-        top: '45%',
+        left: '22%',
+        top: '42%',
         style: {
           text: formatNumber(total),
           textAlign: 'center',
           fill: '#1E293B',
-          fontSize: 28,
+          fontSize: 24,
           fontWeight: 'bold',
         },
       },
       {
         type: 'text',
-        left: '28%',
-        top: '55%',
+        left: '22%',
+        top: '54%',
         style: {
           text: 'Total',
           textAlign: 'center',
           fill: '#94A3B8',
-          fontSize: 14,
+          fontSize: 12,
         },
       },
     ],
@@ -69,24 +88,20 @@ export function RegionBarChart({ data, loading }: RegionBarChartProps) {
       {
         name: 'Region',
         type: 'pie',
-        radius: ['55%', '80%'],
-        center: ['32%', '50%'],
+        radius: ['50%', '75%'],
+        center: ['28%', '50%'],
         avoidLabelOverlap: false,
         itemStyle: {
-          borderRadius: 8,
+          borderRadius: 6,
           borderColor: '#FFFFFF',
-          borderWidth: 3,
+          borderWidth: 2,
         },
         label: {
           show: false,
-          position: 'center'
         },
         emphasis: {
-          label: {
-            show: false,
-            fontSize: 20,
-            fontWeight: 'bold'
-          }
+          scale: true,
+          scaleSize: 5,
         },
         labelLine: {
           show: false
