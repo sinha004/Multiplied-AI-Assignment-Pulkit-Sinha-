@@ -118,7 +118,7 @@ export function ActionCauseChart({ data, loading, filterOptions, onFilterChange 
   };
 
   return (
-    <div className="chart-container" style={{ height: `${chartHeight + 100}px` }}>
+    <div className="chart-container" style={{ height: `${chartHeight + 150}px` }}>
       <h3 className="chart-title" style={{ gap: '12px' }}>
         <BarChartIcon /> Action Cause by Behavior Type
       </h3>
@@ -171,11 +171,11 @@ export function ActionCauseChart({ data, loading, filterOptions, onFilterChange 
       </div>
 
       {loading ? (
-        <div className="flex-center" style={{ height: `${chartHeight}px` }}>
+        <div className="flex-center" style={{ height: `${chartHeight + 50}px` }}>
           <div className="loading-spinner" />
         </div>
       ) : (
-        <ReactECharts option={option} style={{ height: `${chartHeight}px` }} />
+        <ReactECharts option={option} style={{ height: `${chartHeight + 50}px` }} />
       )}
     </div>
   );
