@@ -8,9 +8,7 @@
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green?style=flat-square&logo=supabase)](https://supabase.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-ORM-blueviolet?style=flat-square&logo=prisma)](https://prisma.io/)
 
-![Dashboard Preview](./docs/dashboard-preview.png)
-
-## � Project Overview
+## Project Overview
 
 This analytics dashboard provides safety officers and site managers with a powerful tool to monitor "Near Miss" incidents. It transitions from traditional spreadsheet tracking to a dynamic, visual, and interactive platform.
 
@@ -145,7 +143,7 @@ npm run dev
 
 The application is deployed live:
 *   **Frontend**: Hosted on [Vercel](https://vercel.com) for edge-network performance.
-*   **Backend**: Hosted on [Render](https://render.com) (or similar) providing the API runtime.
+*   **Backend**: Hosted on [Vercel](https://vercel.com) providing the API runtime.
 *   **Database**: Managed PostgreSQL instance on [Supabase](https://supabase.com).
 
 To deploy your own instance, verify the environment variables:
