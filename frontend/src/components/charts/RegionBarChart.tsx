@@ -9,7 +9,6 @@ interface RegionBarChartProps {
 }
 
 export function RegionBarChart({ data, loading }: RegionBarChartProps) {
-  const sortedData = [...data].sort((a, b) => b.value - a.value).slice(0, 6);
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
   // Group remaining items as "Other"
@@ -55,7 +54,6 @@ export function RegionBarChart({ data, loading }: RegionBarChartProps) {
       itemWidth: 10,
       itemHeight: 10,
       formatter: (name: string) => {
-        const item = chartData.find(d => d.name === name);
         return name.length > 18 ? name.substring(0, 18) + '...' : name;
       },
     },
