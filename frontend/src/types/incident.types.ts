@@ -70,9 +70,29 @@ export interface FilterParams {
   actionCause?: string;
   year?: number;
   dateTo?: string;
+  primaryCategory?: string;
+  nearMissSubCategory?: string;
+  unsafeConditionOrBehavior?: string;
+  companyType?: string;
+  location?: string;
+  job?: string;
+  craftCode?: string;
+  isLcv?: boolean;
 }
 
 export interface ActionCauseDetails {
   actionCause: string;
   breakdown: Record<string, number>;
+}
+
+export interface ActionCauseFilters {
+  region?: string;
+  year?: number;
+  severityLevel?: number[];
+}
+
+export interface FilterOptions {
+  regions: string[];
+  years: number[];
+  severityLevels: number[];
 }

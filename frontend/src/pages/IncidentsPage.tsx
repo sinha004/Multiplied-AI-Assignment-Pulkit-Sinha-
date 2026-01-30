@@ -35,13 +35,57 @@ export function IncidentsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
 
+  const [dynamicFilterField, setDynamicFilterField] = useState('');
+  const [dynamicFilterValue, setDynamicFilterValue] = useState('');
+  const [filterValues, setFilterValues] = useState<string[]>([]);
+
+  const FILTER_FIELD_LABELS: Record<string, string> = {
+    severityLevel: 'Severity Level',
+    region: 'Region',
+    primaryCategory: 'Primary Category',
+    nearMissSubCategory: 'Near Miss Sub-Category',
+    unsafeConditionOrBehavior: 'Unsafe Condition/Behavior',
+    companyType: 'Company Type',
+    location: 'Location',
+    job: 'Job',
+    craftCode: 'Craft Code',
+    actionCause: 'Action Cause',
+    behaviorType: 'Behavior Type',
+    gbu: 'GBU',
+    year: 'Year',
+  };
+
   const debouncedSearch = useDebounce(searchInput, 300);
+
+  // Fetch filter values when field changes
+  useEffect(() => {
+    if (dynamicFilterField) {
+      incidentsApi.getAttributeValues(dynamicFilterField)
+        .then(setFilterValues)
+        .catch(err => console.error('Failed to fetch filter values:', err));
+    } else {
+      setFilterValues([]);
+    }
+  }, [dynamicFilterField]);
 
   const fetchIncidents = useCallback(async () => {
     try {
       setLoading(true);
+      const queryFilters = { ...filters };
+      
+      // Apply dynamic filter
+      if (dynamicFilterField && dynamicFilterValue) {
+        // Handle special case for year/numeric fields if needed, but API expects strings usually or specific types
+        // The DTO handles most strings. Year is number in DTO.
+        if (dynamicFilterField === 'year' || dynamicFilterField === 'severityLevel') {
+          (queryFilters as any)[dynamicFilterField] = Number(dynamicFilterValue);
+        } else {
+          (queryFilters as any)[dynamicFilterField] = dynamicFilterValue;
+        }
+      }
+
       const result = await incidentsApi.getAll({
-        ...filters,
+        ...queryFilters,
         search: debouncedSearch || undefined,
       });
       setData(result);
@@ -50,7 +94,7 @@ export function IncidentsPage() {
     } finally {
       setLoading(false);
     }
-  }, [filters, debouncedSearch]);
+  }, [filters, debouncedSearch, dynamicFilterField, dynamicFilterValue]);
 
   useEffect(() => {
     fetchIncidents();
@@ -68,12 +112,9 @@ export function IncidentsPage() {
     }));
   };
 
-  const handleFilterChange = (key: keyof FilterParams, value: string | number) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value || undefined,
-      page: 1, // Reset to first page on filter change
-    }));
+  const handleDynamicFilterChange = (value: string) => {
+    setDynamicFilterValue(value);
+    setFilters(prev => ({ ...prev, page: 1 }));
   };
 
   const handleCreateNew = () => {
@@ -131,7 +172,7 @@ export function IncidentsPage() {
       <div className="page-content">
         {/* Filter Bar */}
         <div className="filter-bar">
-          <div className="filter-group" style={{ flex: 2 }}>
+          <div className="filter-group" style={{ flex: 1.5 }}>
             <label className="filter-label">Search</label>
             <input
               type="text"
@@ -142,48 +183,53 @@ export function IncidentsPage() {
             />
           </div>
 
-          <div className="filter-group">
-            <label className="filter-label">Severity</label>
+          <div className="filter-group" style={{ flex: 1 }}>
+            <label className="filter-label">Filter Field</label>
             <select
               className="input select"
-              value={filters.severityLevel || ''}
-              onChange={(e) => handleFilterChange('severityLevel', e.target.value)}
+              value={dynamicFilterField}
+              onChange={(e) => {
+                setDynamicFilterField(e.target.value);
+                setDynamicFilterValue('');
+              }}
             >
-              <option value="">All</option>
-              <option value="0">Level 0</option>
-              <option value="1">Level 1</option>
-              <option value="2">Level 2</option>
-              <option value="3">Level 3</option>
-              <option value="4">Level 4</option>
+              <option value="">Select Field</option>
+              {Object.entries(FILTER_FIELD_LABELS).map(([key, label]) => (
+                <option key={key} value={key}>{label}</option>
+              ))}
             </select>
           </div>
 
-          <div className="filter-group">
-            <label className="filter-label">Region</label>
-            <input
-              type="text"
-              className="input"
-              placeholder="Filter by region"
-              value={filters.region || ''}
-              onChange={(e) => handleFilterChange('region', e.target.value)}
-            />
-          </div>
-
-          <div className="filter-group">
-            <label className="filter-label">Year</label>
+          <div className="filter-group" style={{ flex: 1 }}>
+            <label className="filter-label">Filter Value</label>
             <select
               className="input select"
-              value={filters.year || ''}
-              onChange={(e) => handleFilterChange('year', e.target.value ? parseInt(e.target.value) : '')}
+              value={dynamicFilterValue}
+              onChange={(e) => handleDynamicFilterChange(e.target.value)}
+              disabled={!dynamicFilterField}
             >
               <option value="">All</option>
-              <option value="2024">2024</option>
-              <option value="2023">2023</option>
-              <option value="2022">2022</option>
+              {filterValues.map((val) => (
+                <option key={val} value={val}>{val}</option>
+              ))}
             </select>
           </div>
-
+          
           <div className="filter-group" style={{ alignSelf: 'flex-end' }}>
+             <button 
+               className="btn btn-secondary" 
+               onClick={() => {
+                 setFilters({ page: 1, limit: 20, sortBy: 'incidentDate', sortOrder: 'desc' });
+                 setDynamicFilterField('');
+                 setDynamicFilterValue('');
+               }}
+               style={{ height: '38px' }}
+             >
+               Clear
+             </button>
+          </div>
+
+          <div className="filter-group" style={{ alignSelf: 'flex-end', marginLeft: 'auto' }}>
             <button className="btn btn-primary" onClick={handleCreateNew}>
               + Add Incident
             </button>

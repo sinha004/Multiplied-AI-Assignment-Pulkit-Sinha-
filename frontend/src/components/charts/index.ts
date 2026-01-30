@@ -5,3 +5,7 @@ export { ActionCauseChart } from './ActionCauseChart';
 export { GbuBarChart } from './GbuBarChart';
 export { BehaviorPieChart } from './BehaviorPieChart';
 export { RadarChart } from './RadarChart';
+export { PrimaryCategoryChart } from './PrimaryCategoryChart';
+export { LocationChart } from './LocationChart';
+export { JobChart } from './JobChart';
+export { CombinedCategoryChart } from './CombinedCategoryChart';

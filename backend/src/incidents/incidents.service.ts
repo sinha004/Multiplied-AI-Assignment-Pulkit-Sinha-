@@ -65,7 +65,68 @@ export class IncidentsService {
       }
     }
 
+    if (filters.primaryCategory) {
+      where.primaryCategory = { contains: filters.primaryCategory, mode: 'insensitive' };
+    }
+    if (filters.nearMissSubCategory) {
+      where.nearMissSubCategory = { contains: filters.nearMissSubCategory, mode: 'insensitive' };
+    }
+    if (filters.unsafeConditionOrBehavior) {
+      where.unsafeConditionOrBehavior = { contains: filters.unsafeConditionOrBehavior, mode: 'insensitive' };
+    }
+    if (filters.companyType) {
+      where.companyType = { contains: filters.companyType, mode: 'insensitive' };
+    }
+    if (filters.location) {
+      where.location = { contains: filters.location, mode: 'insensitive' };
+    }
+    if (filters.job) {
+      where.job = { contains: filters.job, mode: 'insensitive' };
+    }
+    if (filters.craftCode) {
+      where.craftCode = { contains: filters.craftCode, mode: 'insensitive' };
+    }
+    if (filters.isLcv !== undefined) {
+      where.isLcv = filters.isLcv;
+    }
+
     return where;
+  }
+
+  // Get distinct values for a field
+  async getAttributes(field: string): Promise<string[]> {
+    // Whitelist allowed fields to prevent arbitrary query injection
+    const allowedFields = [
+      'severityLevel', 'region', 'gbu', 'behaviorType', 'actionCause',
+      'primaryCategory', 'nearMissSubCategory', 'unsafeConditionOrBehavior',
+      'companyType', 'location', 'job', 'craftCode', 'year', 'month'
+    ];
+
+    if (!allowedFields.includes(field)) {
+      return [];
+    }
+
+    // Use groupBy to get distinct values efficiently
+    // Dynamic access using $queryRaw is cleaner for dynamic columns but groupBy handles types better
+    // But since field is dynamic, we need to map or use raw
+    // For simplicity and safety with Prisma types:
+    
+    // Using distinct with findMany is often easier for simple lists
+    const results = await this.prisma.incident.findMany({
+      distinct: [field as Prisma.IncidentScalarFieldEnum],
+      select: {
+        [field]: true,
+      },
+      orderBy: {
+        [field]: 'asc',
+      },
+    });
+
+    // Extract values and filter null/empty
+    return results
+      .map(r => r[field])
+      .filter(v => v !== null && v !== '')
+      .map(v => String(v));
   }
 
   // Get paginated incidents with filters
@@ -280,11 +341,29 @@ export class IncidentsService {
       }));
   }
 
-  // Get detailed action cause breakdown by behavior type
-  async getByActionCauseDetails() {
+  // Get detailed action cause breakdown by behavior type with optional filters
+  async getByActionCauseDetails(filters?: {
+    region?: string;
+    year?: number;
+    severityLevel?: number[];
+  }) {
+    // Build where clause from filters
+    const where: Prisma.IncidentWhereInput = {};
+    
+    if (filters?.region) {
+      where.region = { contains: filters.region, mode: 'insensitive' };
+    }
+    if (filters?.year) {
+      where.year = filters.year;
+    }
+    if (filters?.severityLevel && filters.severityLevel.length > 0) {
+      where.severityLevel = { in: filters.severityLevel };
+    }
+
     // 1. Get top 10 action causes first to keep chart readable
     const topCauses = await this.prisma.incident.groupBy({
       by: ['actionCause'],
+      where,
       _count: { actionCause: true },
       orderBy: { _count: { actionCause: 'desc' } },
       take: 10,
@@ -298,6 +377,7 @@ export class IncidentsService {
     const data = await this.prisma.incident.groupBy({
       by: ['actionCause', 'behaviorType'],
       where: {
+        ...where,
         actionCause: { in: validCauses }
       },
       _count: { id: true },
@@ -322,5 +402,86 @@ export class IncidentsService {
     });
 
     return result;
+  }
+
+  // Get incidents grouped by primary category
+  async getByPrimaryCategory(): Promise<StatItemDto[]> {
+    const total = await this.prisma.incident.count();
+    const data = await this.prisma.incident.groupBy({
+      by: ['primaryCategory'],
+      _count: { primaryCategory: true },
+      orderBy: { _count: { primaryCategory: 'desc' } },
+      take: 10,
+    });
+
+    return data
+      .filter((item) => item.primaryCategory)
+      .map((item) => ({
+        label: item.primaryCategory || 'Unknown',
+        value: item._count.primaryCategory,
+        percentage: Math.round((item._count.primaryCategory / total) * 100),
+      }));
+  }
+
+  // Get incidents grouped by location
+  async getByLocation(): Promise<StatItemDto[]> {
+    const total = await this.prisma.incident.count();
+    const data = await this.prisma.incident.groupBy({
+      by: ['location'],
+      _count: { location: true },
+      orderBy: { _count: { location: 'desc' } },
+      take: 10,
+    });
+
+    return data
+      .filter((item) => item.location)
+      .map((item) => ({
+        label: item.location || 'Unknown',
+        value: item._count.location,
+        percentage: Math.round((item._count.location / total) * 100),
+      }));
+  }
+
+  // Get incidents grouped by job
+  async getByJob(): Promise<StatItemDto[]> {
+    const total = await this.prisma.incident.count();
+    const data = await this.prisma.incident.groupBy({
+      by: ['job'],
+      _count: { job: true },
+      orderBy: { _count: { job: 'desc' } },
+      take: 10,
+    });
+
+    return data
+      .filter((item) => item.job)
+      .map((item) => ({
+        label: item.job || 'Unknown',
+        value: item._count.job,
+        percentage: Math.round((item._count.job / total) * 100),
+      }));
+  }
+
+  // Get available filter options for dropdowns
+  async getFilterOptions() {
+    const [regions, years, severities] = await Promise.all([
+      this.prisma.incident.groupBy({
+        by: ['region'],
+        orderBy: { region: 'asc' },
+      }),
+      this.prisma.incident.groupBy({
+        by: ['year'],
+        orderBy: { year: 'desc' },
+      }),
+      this.prisma.incident.groupBy({
+        by: ['severityLevel'],
+        orderBy: { severityLevel: 'asc' },
+      }),
+    ]);
+
+    return {
+      regions: regions.filter(r => r.region).map(r => r.region as string),
+      years: years.map(y => y.year),
+      severityLevels: severities.map(s => s.severityLevel),
+    };
   }
 }

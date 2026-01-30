@@ -1,6 +1,6 @@
 import ReactECharts from 'echarts-for-react';
 import type { StatItem } from '../../types/incident.types';
-import { pieColors, commonChartOptions, formatNumber } from '../../utils/chartConfig';
+import { chartColors, commonChartOptions, formatNumber } from '../../utils/chartConfig';
 
 interface RegionBarChartProps {
   data: StatItem[];
@@ -8,75 +8,91 @@ interface RegionBarChartProps {
 }
 
 export function RegionBarChart({ data, loading }: RegionBarChartProps) {
-  const sortedData = [...data].sort((a, b) => b.value - a.value).slice(0, 10);
+  const sortedData = [...data].sort((a, b) => b.value - a.value);
+  const total = sortedData.reduce((sum, item) => sum + item.value, 0);
+
+  const chartData = sortedData.map((item, index) => ({
+    name: item.label,
+    value: item.value,
+    itemStyle: {
+      color: chartColors.palette[index % chartColors.palette.length],
+    },
+  }));
 
   const option = {
     ...commonChartOptions,
     tooltip: {
       ...commonChartOptions.tooltip,
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow',
+      trigger: 'item',
+      formatter: (params: any) => {
+        return `<strong>${params.name}</strong><br/>Incidents: ${formatNumber(params.value)} (${params.percent}%)`;
       },
-      formatter: (params: { name: string; value: number }[]) => {
-        const item = params[0];
-        return `<strong>${item.name}</strong><br/>Incidents: ${formatNumber(item.value)}`;
-      },
+      axisPointer: { type: 'none' },
     },
-    xAxis: {
-      type: 'category',
-      data: sortedData.map((item) => item.label),
-      axisLabel: {
-        color: '#64748B',
-        fontSize: 11,
-        rotate: 45,
-        interval: 0,
+    legend: {
+      orient: 'vertical',
+      right: '5%',
+      top: 'center',
+      textStyle: {
+        color: '#6B7280',
+        fontSize: 12,
       },
-      axisLine: {
-        lineStyle: { color: '#E2E8F0' },
-      },
-      axisTick: {
-        lineStyle: { color: '#E2E8F0' },
-      },
+      itemGap: 12,
     },
-    yAxis: {
-      type: 'value',
-      axisLabel: { color: '#64748B' },
-      splitLine: {
-        lineStyle: { color: '#F1F5F9' },
-      },
-    },
-    series: [
+    graphic: [
       {
-        type: 'bar',
-        data: sortedData.map((item, index) => ({
-          value: item.value,
-          itemStyle: {
-            color: {
-              type: 'linear',
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                { offset: 0, color: pieColors[index % pieColors.length] },
-                { offset: 1, color: pieColors[(index + 3) % pieColors.length] },
-              ],
-            },
-            borderRadius: [6, 6, 0, 0],
-          },
-        })),
-        barWidth: '60%',
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowColor: 'rgba(0, 0, 0, 0.15)',
-          },
+        type: 'text',
+        left: '28%',
+        top: '45%',
+        style: {
+          text: formatNumber(total),
+          textAlign: 'center',
+          fill: '#1E293B',
+          fontSize: 28,
+          fontWeight: 'bold',
         },
-        animationDelay: (idx: number) => idx * 50,
+      },
+      {
+        type: 'text',
+        left: '28%',
+        top: '55%',
+        style: {
+          text: 'Total',
+          textAlign: 'center',
+          fill: '#94A3B8',
+          fontSize: 14,
+        },
       },
     ],
-    animationEasing: 'elasticOut',
+    series: [
+      {
+        name: 'Region',
+        type: 'pie',
+        radius: ['55%', '80%'],
+        center: ['32%', '50%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 8,
+          borderColor: '#FFFFFF',
+          borderWidth: 3,
+        },
+        label: {
+          show: false,
+          position: 'center'
+        },
+        emphasis: {
+          label: {
+            show: false,
+            fontSize: 20,
+            fontWeight: 'bold'
+          }
+        },
+        labelLine: {
+          show: false
+        },
+        data: chartData,
+      },
+    ],
   };
 
   if (loading) {

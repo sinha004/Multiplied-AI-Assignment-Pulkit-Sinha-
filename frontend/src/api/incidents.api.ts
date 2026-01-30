@@ -7,6 +7,8 @@ import type {
   FilterParams,
   Incident,
   ActionCauseDetails,
+  ActionCauseFilters,
+  FilterOptions,
 } from '../types/incident.types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
@@ -85,8 +87,39 @@ export const incidentsApi = {
     return data;
   },
 
-  getByActionCauseDetails: async (): Promise<ActionCauseDetails[]> => {
-    const { data } = await api.get('/incidents/stats/by-action-cause-details');
+  getByActionCauseDetails: async (filters?: ActionCauseFilters): Promise<ActionCauseDetails[]> => {
+    const params: Record<string, string> = {};
+    if (filters?.region) params.region = filters.region;
+    if (filters?.year) params.year = String(filters.year);
+    if (filters?.severityLevel && filters.severityLevel.length > 0) {
+      params.severityLevel = filters.severityLevel.join(',');
+    }
+    const { data } = await api.get('/incidents/stats/by-action-cause-details', { params });
+    return data;
+  },
+
+  getByPrimaryCategory: async (): Promise<StatItem[]> => {
+    const { data } = await api.get('/incidents/stats/by-primary-category');
+    return data;
+  },
+
+  getByLocation: async (): Promise<StatItem[]> => {
+    const { data } = await api.get('/incidents/stats/by-location');
+    return data;
+  },
+
+  getByJob: async (): Promise<StatItem[]> => {
+    const { data } = await api.get('/incidents/stats/by-job');
+    return data;
+  },
+
+  getFilterOptions: async (): Promise<FilterOptions> => {
+    const { data } = await api.get('/incidents/stats/filter-options');
+    return data;
+  },
+
+  getAttributeValues: async (field: string): Promise<string[]> => {
+    const { data } = await api.get(`/incidents/attributes/${field}`);
     return data;
   },
 };

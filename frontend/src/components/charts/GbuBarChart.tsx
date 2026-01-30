@@ -50,7 +50,7 @@ export function GbuBarChart({ data, loading }: GbuBarChartProps) {
               y2: 1,
               colorStops: [
                 { offset: 0, color: chartColors.purple },
-                { offset: 1, color: chartColors.pink },
+                { offset: 1, color: chartColors.orange },
               ],
             },
             borderRadius: [8, 8, 0, 0],

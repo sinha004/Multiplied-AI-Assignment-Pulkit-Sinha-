@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Header } from '../components/layout/Header';
 import { KpiCard } from '../components/cards/KpiCard';
 import {
@@ -6,10 +6,10 @@ import {
   RegionBarChart,
   MonthlyTrendChart,
   ActionCauseChart,
-  BehaviorPieChart,
+  CombinedCategoryChart,
 } from '../components/charts';
 import { incidentsApi } from '../api/incidents.api';
-import type { SummaryStats, StatItem, MonthlyTrend, ActionCauseDetails } from '../types/incident.types';
+import type { SummaryStats, StatItem, MonthlyTrend, ActionCauseDetails, ActionCauseFilters, FilterOptions } from '../types/incident.types';
 
 // Professional SVG Icons
 const ChartBarIcon = () => (
@@ -59,8 +59,12 @@ export function DashboardPage() {
   const [regionData, setRegionData] = useState<StatItem[]>([]);
   const [monthlyData, setMonthlyData] = useState<MonthlyTrend[]>([]);
   const [actionCauseData, setActionCauseData] = useState<ActionCauseDetails[]>([]);
-  const [behaviorData, setBehaviorData] = useState<StatItem[]>([]);
+  const [primaryCategoryData, setPrimaryCategoryData] = useState<StatItem[]>([]);
+  const [locationData, setLocationData] = useState<StatItem[]>([]);
+  const [jobData, setJobData] = useState<StatItem[]>([]);
+  const [filterOptions, setFilterOptions] = useState<FilterOptions | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const [actionCauseLoading, setActionCauseLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,14 +76,20 @@ export function DashboardPage() {
           regionRes,
           monthlyRes,
           actionCauseRes,
-          behaviorRes,
+          primaryCategoryRes,
+          locationRes,
+          jobRes,
+          filterOptionsRes,
         ] = await Promise.all([
           incidentsApi.getSummary(),
           incidentsApi.getBySeverity(),
           incidentsApi.getByRegion(),
           incidentsApi.getByMonth(),
           incidentsApi.getByActionCauseDetails(),
-          incidentsApi.getByBehaviorType(),
+          incidentsApi.getByPrimaryCategory(),
+          incidentsApi.getByLocation(),
+          incidentsApi.getByJob(),
+          incidentsApi.getFilterOptions(),
         ]);
 
         setSummary(summaryRes);
@@ -87,7 +97,10 @@ export function DashboardPage() {
         setRegionData(regionRes);
         setMonthlyData(monthlyRes);
         setActionCauseData(actionCauseRes);
-        setBehaviorData(behaviorRes);
+        setPrimaryCategoryData(primaryCategoryRes);
+        setLocationData(locationRes);
+        setJobData(jobRes);
+        setFilterOptions(filterOptionsRes);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
       } finally {
@@ -96,6 +109,19 @@ export function DashboardPage() {
     };
 
     fetchData();
+  }, []);
+
+  // Handle ActionCause filter changes
+  const handleActionCauseFilterChange = useCallback(async (filters: ActionCauseFilters) => {
+    try {
+      setActionCauseLoading(true);
+      const data = await incidentsApi.getByActionCauseDetails(filters);
+      setActionCauseData(data);
+    } catch (error) {
+      console.error('Failed to fetch filtered action cause data:', error);
+    } finally {
+      setActionCauseLoading(false);
+    }
   }, []);
 
   const highSeverityCount = severityData
@@ -149,14 +175,24 @@ export function DashboardPage() {
 
         {/* Charts Row 3 - Action Cause Chart (Full Width) */}
         <div className="mb-lg">
-          <ActionCauseChart data={actionCauseData} loading={loading} />
+          <ActionCauseChart 
+            data={actionCauseData} 
+            loading={actionCauseLoading || loading} 
+            filterOptions={filterOptions}
+            onFilterChange={handleActionCauseFilterChange}
+          />
         </div>
 
-        {/* Charts Row 4 - Behavior Pie Chart */}
-        <div className="grid grid-cols-2">
-          <BehaviorPieChart data={behaviorData} loading={loading} />
-          {/* Placeholder for layout balance or remove grid-cols-2 if full width desired */}
+        {/* Charts Row 4 - Combined Category Chart */}
+        <div className="mb-lg">
+          <CombinedCategoryChart
+            primaryCategoryData={primaryCategoryData}
+            locationData={locationData}
+            jobData={jobData}
+            loading={loading}
+          />
         </div>
+
       </div>
     </>
   );

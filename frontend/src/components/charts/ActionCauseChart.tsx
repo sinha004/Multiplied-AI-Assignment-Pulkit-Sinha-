@@ -1,13 +1,32 @@
+import { useState, useEffect } from 'react';
 import ReactECharts from 'echarts-for-react';
+import { Select, Space } from 'antd';
 import { commonChartOptions } from '../../utils/chartConfig';
-import { ActionCauseDetails } from '../../types/incident.types';
+import { ActionCauseDetails, ActionCauseFilters, FilterOptions } from '../../types/incident.types';
 
 interface ActionCauseChartProps {
   data: ActionCauseDetails[];
   loading: boolean;
+  filterOptions?: FilterOptions;
+  onFilterChange?: (filters: ActionCauseFilters) => void;
 }
 
-export function ActionCauseChart({ data, loading }: ActionCauseChartProps) {
+export function ActionCauseChart({ data, loading, filterOptions, onFilterChange }: ActionCauseChartProps) {
+  const [selectedRegion, setSelectedRegion] = useState<string | undefined>(undefined);
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined);
+  const [selectedSeverity, setSelectedSeverity] = useState<number[]>([]);
+
+  // Trigger filter change when any filter updates
+  useEffect(() => {
+    if (onFilterChange) {
+      onFilterChange({
+        region: selectedRegion,
+        year: selectedYear,
+        severityLevel: selectedSeverity.length > 0 ? selectedSeverity : undefined,
+      });
+    }
+  }, [selectedRegion, selectedYear, selectedSeverity, onFilterChange]);
+
   // Extract all unique behavior types for series
   const behaviorTypes = Array.from(new Set(
     data.flatMap(item => Object.keys(item.breakdown))
@@ -23,15 +42,6 @@ export function ActionCauseChart({ data, loading }: ActionCauseChartProps) {
 
   const option = {
     ...commonChartOptions,
-    title: {
-      text: 'Action Cause by Behavior Type',
-      left: 'center',
-      textStyle: {
-        fontSize: 14,
-        fontWeight: 'normal',
-        color: '#6B7280',
-      },
-    },
     tooltip: {
       ...commonChartOptions.tooltip,
       trigger: 'axis',
@@ -52,7 +62,8 @@ export function ActionCauseChart({ data, loading }: ActionCauseChartProps) {
     grid: {
       ...commonChartOptions.grid,
       bottom: 40,
-      left: 200, // Increase left margin for long labels
+      left: 200,
+      top: 20,
     },
     xAxis: {
       type: 'value',
@@ -98,14 +109,71 @@ export function ActionCauseChart({ data, loading }: ActionCauseChartProps) {
   // Calculate dynamic height based on number of categories
   const chartHeight = Math.max(400, data.length * 45);
 
+  const handleClearFilters = () => {
+    setSelectedRegion(undefined);
+    setSelectedYear(undefined);
+    setSelectedSeverity([]);
+  };
+
   return (
-    <div className="card" style={{ height: `${chartHeight}px` }}>
+    <div className="chart-container" style={{ height: `${chartHeight + 100}px` }}>
+      <h3 className="chart-title">
+        <span>⚡</span> Action Cause by Behavior Type
+      </h3>
+      {/* Filter Controls */}
+      <div style={{ 
+        padding: '12px 16px', 
+        borderBottom: '1px solid #F3F4F6',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '8px'
+      }}>
+        <Space wrap size="small">
+          <Select
+            placeholder="Filter by Region"
+            allowClear
+            style={{ minWidth: 150 }}
+            value={selectedRegion}
+            onChange={setSelectedRegion}
+            options={filterOptions?.regions?.map(r => ({ label: r, value: r })) || []}
+          />
+          <Select
+            placeholder="Filter by Year"
+            allowClear
+            style={{ minWidth: 120 }}
+            value={selectedYear}
+            onChange={setSelectedYear}
+            options={filterOptions?.years?.map(y => ({ label: String(y), value: y })) || []}
+          />
+          <Select
+            placeholder="Filter by Severity"
+            mode="multiple"
+            allowClear
+            style={{ minWidth: 160 }}
+            value={selectedSeverity}
+            onChange={setSelectedSeverity}
+            options={filterOptions?.severityLevels?.map(s => ({ label: `Level ${s}`, value: s })) || []}
+            maxTagCount={2}
+          />
+        </Space>
+        {(selectedRegion || selectedYear || selectedSeverity.length > 0) && (
+          <a 
+            onClick={handleClearFilters} 
+            style={{ color: '#6B7280', fontSize: 12, cursor: 'pointer' }}
+          >
+            Clear filters
+          </a>
+        )}
+      </div>
+
       {loading ? (
-        <div className="flex-center" style={{ height: '100%' }}>
+        <div className="flex-center" style={{ height: `${chartHeight}px` }}>
           <div className="loading-spinner" />
         </div>
       ) : (
-        <ReactECharts option={option} style={{ height: '100%' }} />
+        <ReactECharts option={option} style={{ height: `${chartHeight}px` }} />
       )}
     </div>
   );
